@@ -13,3 +13,18 @@ export const query = async (sql, params) => {
   const [rows] = await pool.execute(sql, params);
   return rows;
 };
+
+export const withTransaction = async (handler) => {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    const result = await handler(connection);
+    await connection.commit();
+    return result;
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};

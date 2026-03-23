@@ -1,9 +1,17 @@
 import { ok } from '../utils/apiResponse.js';
-import { createMatch, getLeaderboard, recordBall } from '../services/matchService.js';
+import { createMatch, getLeaderboard, getMatchById, recordBall } from '../services/matchService.js';
 
 export const create = async (req, res, next) => {
   try {
     return ok(res, await createMatch(req.body), 'Match created', 201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getById = async (req, res, next) => {
+  try {
+    return ok(res, await getMatchById(req.params.id));
   } catch (error) {
     next(error);
   }

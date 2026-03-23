@@ -12,3 +12,4 @@ export const tournamentCreateValidator = [
 ];
 
 export const tournamentIdValidator = [param('id').isInt({ min: 1 })];
+export const tournamentRegistrationValidator = [param('id').isInt({ min: 1 }), body('teamId').isInt({ min: 1 })];

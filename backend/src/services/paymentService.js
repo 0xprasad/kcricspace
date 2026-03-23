@@ -2,10 +2,15 @@ import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import { env } from '../config/env.js';
 import { query } from '../config/db.js';
+import { AppError } from '../utils/errors.js';
 
-const razorpay = new Razorpay({ key_id: env.razorpay.keyId, key_secret: env.razorpay.keySecret });
+const razorpay = env.razorpay.keyId && env.razorpay.keySecret
+  ? new Razorpay({ key_id: env.razorpay.keyId, key_secret: env.razorpay.keySecret })
+  : null;
 
 export const createOrder = async ({ tournamentId, teamId, amount, userId }) => {
+  if (!razorpay) throw new AppError('Razorpay is not configured', 503);
+
   const order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `tour-${tournamentId}-team-${teamId}` });
 
   await query(
@@ -18,11 +23,11 @@ export const createOrder = async ({ tournamentId, teamId, amount, userId }) => {
 };
 
 export const verifyPayment = async ({ paymentId, orderId, signature }) => {
+  if (!env.razorpay.keySecret) throw new AppError('Razorpay is not configured', 503);
+
   const expected = crypto.createHmac('sha256', env.razorpay.keySecret).update(`${orderId}|${paymentId}`).digest('hex');
   if (expected !== signature) {
-    const error = new Error('Payment signature mismatch');
-    error.statusCode = 400;
-    throw error;
+    throw new AppError('Payment signature mismatch', 400);
   }
 
   await query(

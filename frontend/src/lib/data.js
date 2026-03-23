@@ -22,3 +22,13 @@ export const teamRoster = [
   { name: 'Amit Das', role: 'Fast Bowler', status: 'On Leave' },
   { name: 'Vijay Patil', role: 'Wicketkeeper', status: 'Available' }
 ];
+
+export const apiCatalog = [
+  { method: 'POST', path: '/auth/register', description: 'Create a user account with JWT-ready credentials.' },
+  { method: 'POST', path: '/auth/login', description: 'Authenticate a user and return bearer token payload.' },
+  { method: 'GET', path: '/tournaments', description: 'List tournaments with registration counts.' },
+  { method: 'POST', path: '/tournaments/:id/register', description: 'Register a team into a tournament.' },
+  { method: 'GET', path: '/players/:id', description: 'Fetch detailed player profile and statistics.' },
+  { method: 'POST', path: '/matches/:id/score', description: 'Record a ball event for live scoring.' },
+  { method: 'GET', path: '/admin/overview', description: 'Load platform-level KPIs for the admin dashboard.' }
+];

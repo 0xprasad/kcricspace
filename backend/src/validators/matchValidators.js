@@ -9,6 +9,8 @@ export const matchCreateValidator = [
   body('oversPerInnings').isInt({ min: 1, max: 90 })
 ];
 
+export const matchIdValidator = [param('id').isInt({ min: 1 })];
+
 export const scoreValidator = [
   param('id').isInt({ min: 1 }),
   body('inningsNumber').isInt({ min: 1, max: 4 }),
@@ -18,6 +20,8 @@ export const scoreValidator = [
   body('extrasType').optional().isIn(['none', 'wide', 'no_ball', 'bye', 'leg_bye']),
   body('extrasRuns').optional().isInt({ min: 0, max: 6 }),
   body('isWicket').optional().isBoolean(),
+  body('dismissalType').optional().isLength({ min: 2, max: 32 }),
   body('strikerId').isInt({ min: 1 }),
+  body('nonStrikerId').optional().isInt({ min: 1 }),
   body('bowlerId').isInt({ min: 1 })
 ];

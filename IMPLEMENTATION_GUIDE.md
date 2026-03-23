@@ -38,29 +38,31 @@ kcricspace/
 
 ## 2. Database schema (SQL)
 - Normalized MySQL schema is implemented in `backend/sql/schema.sql`.
-- Core tables included: `roles`, `users`, `teams`, `players`, `tournaments`, `tournament_teams`, `matches`, `innings`, `balls`, `scorecards`, `player_stats`, `team_stats`, `payments`.
+- Core tables included: `roles`, `users`, `teams`, `players`, `tournaments`, `tournament_teams`, `matches`, `innings`, `balls`, `scorecards`, `player_stats`, `team_stats`, and `payments`.
 - Foreign keys and targeted indexes support scalable querying for registrations, fixtures, live scoring, leaderboards, and payment history.
 
 ## 3. Backend implementation (step-by-step files)
-1. `backend/src/config/env.js` and `backend/src/config/db.js` establish environment and MySQL pooling.
-2. `backend/src/utils/*` centralizes auth token and API response utilities.
+1. `backend/src/config/env.js` and `backend/src/config/db.js` establish environment, MySQL pooling, and transaction helpers.
+2. `backend/src/utils/*` centralizes auth token, error, and API response utilities.
 3. `backend/src/middleware/*` adds JWT auth, RBAC, validation, rate limiting, and error handling.
-4. `backend/src/validators/*` enforces request validation for auth, teams, tournaments, matches, and payments.
-5. `backend/src/services/*` contains domain logic for auth, team CRUD, tournament creation/listing, live scoring, and Razorpay verification.
+4. `backend/src/validators/*` enforces request validation for auth, players, teams, tournaments, matches, and payments.
+5. `backend/src/services/*` contains domain logic for auth, player/team CRUD, tournament registration, live scoring, admin KPIs, and Razorpay verification.
 6. `backend/src/controllers/*` keeps HTTP handlers thin.
-7. `backend/src/routes/*` wires REST endpoints.
+7. `backend/src/routes/*` wires REST endpoints for public, authenticated, and admin use cases.
 8. `backend/src/app.js` and `backend/src/server.js` provide the production-ready server bootstrap.
 
 ### Example endpoints
 - `POST /auth/register`
 - `POST /auth/login`
-- `GET /tournaments`
-- `POST /tournaments`
-- `POST /teams`
-- `GET /teams/:id`
-- `POST /matches`
+- `GET /players`
+- `POST /players`
+- `GET /teams`
+- `GET /tournaments/:id`
+- `POST /tournaments/:id/register`
+- `GET /matches/:id`
 - `POST /matches/:id/score`
 - `GET /matches/leaderboard`
+- `GET /admin/overview`
 - `POST /payments/create-order`
 - `POST /payments/verify`
 
@@ -77,7 +79,7 @@ kcricspace/
   - Player profile
   - Live match scoring UI
   - Admin dashboard
-  - Setup guide
+  - Setup guide with API catalog
 - `frontend/src/context/AuthContext.jsx` stores auth state and token persistence.
 - `frontend/src/api/client.js` configures Axios with bearer token injection.
 
@@ -95,40 +97,46 @@ curl -X POST http://localhost:5000/auth/register \
   }'
 ```
 
-### Create tournament (admin token required)
+### Create player profile
 ```bash
-curl -X POST http://localhost:5000/tournaments \
+curl -X POST http://localhost:5000/players \
   -H 'Authorization: Bearer <JWT>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "name":"Corporate Elite Cup 2026",
-    "type":"league",
-    "format":"T20",
-    "city":"Bengaluru",
-    "startDate":"2026-05-10",
-    "endDate":"2026-05-20",
-    "entryFee":15000,
-    "maxTeams":16
+    "fullName":"Arjun Mehta",
+    "role":"all_rounder",
+    "battingHand":"right",
+    "teamId":1
   }'
 ```
 
-### Create Razorpay order
+### Register a team in a tournament
 ```bash
-curl -X POST http://localhost:5000/payments/create-order \
+curl -X POST http://localhost:5000/tournaments/1/register \
   -H 'Authorization: Bearer <JWT>' \
   -H 'Content-Type: application/json' \
   -d '{
-    "tournamentId":1,
-    "teamId":3,
-    "amount":1500000
+    "teamId":3
   }'
 ```
 
-### Frontend Axios usage
-```js
-import { api } from './src/api/client';
-
-const { data } = await api.get('/tournaments');
+### Record live score event
+```bash
+curl -X POST http://localhost:5000/matches/12/score \
+  -H 'Authorization: Bearer <JWT>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "inningsNumber":1,
+    "overNumber":18,
+    "ballInOver":5,
+    "runsBat":4,
+    "extrasType":"none",
+    "extrasRuns":0,
+    "isWicket":false,
+    "strikerId":17,
+    "nonStrikerId":18,
+    "bowlerId":22
+  }'
 ```
 
 ## 6. Setup & run instructions
