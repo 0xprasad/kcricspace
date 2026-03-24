@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme {
+  /* New theme colors from provided HTML */
+  --color-surface-container-highest: #293830;
+  --color-surface-bright: #2d3d34;
+  --color-outline: #8b928d;
+  --color-inverse-surface: #d5e7db;
+  --color-on-error-container: #ffdad6;
+  --color-on-background: #d5e7db;
+  --color-surface-container-high: #1e2d26;
+  --color-surface-dim: #071610;
+  --color-on-tertiary: #462b00;
+  --color-on-primary-fixed-variant: #2e4d3f;
+  --color-surface-container-lowest: #03110b;
+  --color-on-secondary-fixed-variant: #005312;
+  --color-tertiary-container: #4b2e00;
+  --color-surface: #071610;
+  --color-secondary-fixed-dim: #88d982;
+  --color-on-secondary-container: #81d27c;
+  --color-inverse-primary: #456556;
+  --color-on-primary: #173629;
+  --color-on-tertiary-fixed-variant: #643f00;
+  --color-outline-variant: #414844;
+  --color-surface-tint: #accebc;
+  --color-primary-fixed: #c7ebd8;
+  --color-error: #ffb4ab;
+  --color-tertiary-fixed: #ffddb5;
+  --color-tertiary-fixed-dim: #ffb957;
+  --color-on-tertiary-fixed: #2a1800;
+  --color-secondary-fixed: #a3f69c;
+  --color-on-surface: #d5e7db;
+  --color-on-secondary-fixed: #002204;
+  --color-background: #071610;
+  --color-surface-variant: #293830;
+  --color-primary: #accebc;
+  --color-secondary: #88d982;
+  --color-on-tertiary-container: #d78d00;
+  --color-on-secondary: #003909;
+  --color-surface-container-low: #101f18;
+  --color-primary-container: #1b3a2d;
+  --color-tertiary: #ffb957;
+  --color-surface-container: #14231b;
+  --color-secondary-container: #005b14;
+  --color-on-primary-container: #83a493;
+  --color-primary-fixed-dim: #accebc;
+  --color-on-primary-fixed: #012115;
+  --color-on-surface-variant: #c1c8c2;
+  --color-inverse-on-surface: #24342c;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+
+  /* Basic variables for @apply directives */
+  --color-border: #8b928d;
+  --color-foreground: #d5e7db;
+  --color-muted-foreground: #8b928d;
+
+  /* Fonts */
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
+  --font-sans: "Inter", sans-serif;
+
+  --radius-lg: 0.25rem;
+  --radius-md: 0.125rem;
+  --radius-sm: 0.125rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+}
+
+@layer utilities {
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 35s linear infinite;
+  }
+  .text-glow {
+    text-shadow: 0 0 20px rgba(172, 206, 188, 0.3);
+  }
+  .bg-stadium {
+    background-image: linear-gradient(to bottom, rgba(27, 58, 45, 0.85), rgba(7, 22, 16, 0.95)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuBX2mtupZ1MgKNgNL4V2_TV_KwO2la3zJUxWMFDa5vqCZKYl2XskW61-M0FP9zbEiAEBObTQ8SMoC-pchzlgLBnmuYUW7ub7Pz8Ek81zA3-JMsC2YSRgl_rIAbmSMgRveikYF9vdUXzVbNN5WnGWtXXO2ekf8um_IJ1ynGqJRHcV87mps1TFpx7yMYKHuBk-j9vbed3IthTs4RaaKTjZa2SOEMYlfa7VIXtKJ8OXu3SPbfh5SpFrXplMxn2qY1s1pd8TMsaJmHRy2s);
+    background-size: cover;
+    background-position: center;
+  }
+  .bg-stadium-day {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(7, 22, 16, 0.8)), url('/src/assets/stadium-sunset.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* Custom Scrollbar for sports feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/30 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/50;
+}
